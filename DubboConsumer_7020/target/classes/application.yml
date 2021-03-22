@@ -1,0 +1,81 @@
+#YAML基础语法[ key:空格value 表示一对键值对 ]
+#   大小写敏感;使用缩进[只允许空格,不允许TAB]表示层级关系;缩进空格数目不重要,只要相同层级的元素左对齐即可
+#YAML支持的数据结构
+#   对象[键值对集合]、数组[一组按次序排列的值]、字面量[单个的、不可再分的值]
+#
+#'${xxx}' -> 配置占位符演示,yml文件、properties文件均可以使用
+#
+#使用'---回车'可以对yml文件进行文档分割,springboot默认获取第一文档下的配置数据
+#使用 spring: 
+#      profiles: test 来定义不同文档的域
+#使用 spring: 
+#      profiles:
+#       active: test 来表明使用哪份文档的配置信息
+#也可以在CMD中 使用 'java -jar springbootSignle4Nonet-0.0.1-SNAPSHOT.jar --spring.profiles.active=test'来指定使用哪份配置
+#SpringBoot会先读取默认配置,根据配置文件的选择项来覆盖已有配置项
+
+
+# 开启springboot的debug模式,默认为false不开启
+debug: false
+
+#服务端配置
+server:
+   #服务访问端口
+   port: 7020
+   #服务器项目访问路径[SpringBoot_1.x配置]
+   context-path: /dbConsumer
+   #服务器项目访问路径[SpringBoot_2.x配置]
+   servlet:
+      context-path: /dubboConsumer
+   
+#Spring配置
+spring:
+   mvc:
+      #视图配置
+      view:
+         #视图前缀
+         prefix: /WEB-INF/pages/
+         #视图后缀
+         suffix: .jsp
+   #内置thymeleaf模板配置
+   thymeleaf:
+      #是否启用Thymeleaf模板解析，true【开启】、false【关闭】
+      enabled: false
+      #是否启用Thymeleaf模板缓存，true【开启】、false【关闭】
+      cache: false
+         #数据库配置
+   datasource:
+      #数据库连接驱动
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      #数据库连接URL
+      url: ${project.mysql}
+      #数据库用户名
+      username: root
+      #数据库用户密码
+      password: 123456
+      
+
+
+# 日志配置
+logging: 
+## logging.file 和 logging.path 都没有指定时，只在控制台输出
+## logging.path和logging.file这2个属性，只需要配置其中之一即可，如果同时配置，则使用logging.file属性
+## 只配置logging.file，则在项目根目录下保存到指定文件名文件；logging.file也可配置文件的保存路径
+## 只配置logging.path，则在指定目录下保存到默认名(spring.log)文件
+   # 配置日志输出的文件名，也可以配置文件名的绝对路径
+   file: ../logs/7020/consumer.log
+   #  配置日志的路径。如果没有配置logging.file,Spring Boot 将默认使用spring.log作为文件名。
+   #path: ../DubboLogs/DubboConsumer_7020
+## 日志样式定义
+## %d{日期格式}，日期时间格式化
+## %thread，当前执行线程格式化
+## %level，日志的输出级别【trace、debug、info、warn、error】
+## %logger{15}，输出日志的logger名，{logger名长度}，保留当前类名，如果全类名长度超出，则其他包名全取首字母小写。
+## %msg，输出消息
+## %n，换行
+   pattern:
+      # 定义控制台console中的样式
+      console: "%d{HH:mm} %-5level [%thread] %logger{15} - %msg%n"
+      # 定义文件中日志的样式
+      file: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{15} - %msg%n"
+   

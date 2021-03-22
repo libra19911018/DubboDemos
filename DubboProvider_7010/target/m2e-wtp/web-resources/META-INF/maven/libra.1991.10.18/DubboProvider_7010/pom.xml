@@ -1,0 +1,135 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>libra.1991.10.18</groupId>
+		<artifactId>DubboDemos</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>DubboProvider_7010</artifactId>
+	
+	<packaging>war</packaging>
+	
+	<name>基于Spring的Dubbo-Provider服务测试用例</name>
+	
+	<dependencies>
+		<dependency>
+			<groupId>libra.1991.10.18</groupId>
+			<artifactId>DubboDemosPlugin</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		
+		
+		<!-- DUBBO服务依赖 -->
+		<!-- https://mvnrepository.com/artifact/com.alibaba/dubbo -->
+		<!-- 
+		<dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>dubbo</artifactId>
+		    <version>2.6.9</version>
+		</dependency> 
+		-->
+		<!-- https://mvnrepository.com/artifact/org.apache.dubbo/dubbo -->
+		<dependency>
+		    <groupId>org.apache.dubbo</groupId>
+		    <artifactId>dubbo</artifactId>
+		    <version>${dubbo.ver.2.7.9}</version>
+		</dependency>
+		<!-- 使用Zookeeper作为注册中心，导入Zookeeper客户端依赖，dubbo使用curator作为客户端组件 -->
+		<!-- <dependency>
+		    <groupId>org.apache.zookeeper</groupId>
+		    <artifactId>zookeeper</artifactId>
+		    <version>${zookeeper.ver.3.6.2}</version>
+		</dependency> -->
+		<dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+            <version>${curator.ver.2.8.0}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+            <version>${curator.ver.2.8.0}</version>
+        </dependency>
+        
+	
+	
+		<!-- spring-boot-starter-web帮我们导入了web模块正常运行所依赖的组件 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<!-- zookeeper使用的是log4j，需要剔除logback的jar -->
+			<exclusions>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		
+		
+		<!-- 引入JDBC -->
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<!-- 引入MySQL驱动 -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<!-- 引用第三方datasource,不使用默认的 -->
+		 <dependency>
+		     <groupId>com.alibaba</groupId>
+		     <artifactId>druid</artifactId>
+		     <version>${com.alibaba.druid}</version>
+		 </dependency>	
+		 
+		 
+		 
+		 <!-- 以任意Tomcat形式运行的四个依赖 -->
+		 <!-- 无论采取那种引入方式，都必须排除内置的tomcat -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency> 
+       <!-- 添加servlet依赖模块 -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- 添加jstl标签库依赖模块 -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- 使用jsp引擎，springboot内置tomcat没有此依赖 -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <scope>provided</scope>
+        </dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<!-- 设置忽略web.xml文件 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+			</plugin>
+			<!-- springboot打jar包插件 -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>

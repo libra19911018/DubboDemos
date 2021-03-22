@@ -1,0 +1,148 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>libra.1991.10.18</groupId>
+	<artifactId>DubboDemos</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Dubbo测试示例</name>
+
+	<!-- 通用版本artifactId定义 -->
+	<properties>
+		<spring.boot.2.ver>2.3.1.RELEASE</spring.boot.2.ver>
+		<com.alibaba.druid>1.1.10</com.alibaba.druid>
+		<!-- Dubbo版本 -->
+		<dubbo.ver.2.7.9>2.7.9</dubbo.ver.2.7.9>
+		<dubbo.ver.2.7.8>2.7.8</dubbo.ver.2.7.8>
+		<!-- Zookeeper版本 -->
+		<zookeeper.ver.3.6.2>3.6.2</zookeeper.ver.3.6.2>
+		<!-- Dubbo依赖的Zookeeper客户端 -->
+		<curator.ver.2.8.0>2.8.0</curator.ver.2.8.0>
+		
+	</properties>
+	
+	<modules>
+		<module>DubboDemosPlugin</module>
+		<!-- 基于xml方式实现的Dubbo服务调用 -->
+		<module>DubboProvider_7010</module>
+		<module>DubboConsumer_7020</module>
+		<!-- 基于properties、yaml配置+注解方式实现的Dubbo服务调用 -->
+		<module>DubboProviderBoot_7011</module>
+		<module>DubboConsumerBoot_7021</module>
+		<!-- 基于configration配置类方式实现的Dubbo服务调用 -->
+		<module>DubboProviderBootConfig_7012</module>
+		<module>DubboConsumerBootConfig_7022</module>
+	</modules>
+	
+	
+	<dependencies>
+		<!-- lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<!-- jUnit -->
+		<dependency>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		   	<scope>test</scope>
+		</dependency>
+		
+	</dependencies>
+	<!-- 在父工程中配置相关依赖的统一管理 
+	Dependencies相对于dependencyManagement，所有生命在dependencies里的依赖都会自动引入，并默认被所有的子项目继承。
+	dependencyManagement里只是声明依赖，并不自动实现引入，因此子项目需要显示的声明需要用的依赖。如果不在子项目中声明依赖，是不会从父项目中继承下来的；只有在子项目中写了该依赖项，并且没有指定具体版本，才会从父项目中继承该项，并且version和scope都读取自父pom;另外如果子项目中指定了版本号，那么会使用子项目中指定的jar版本。
+	-->
+	<dependencyManagement>
+		<dependencies>
+			<!-- 方式一、通过<scope>import</scope>的形式，引入springboot的pom文件，来达到统一管理项目版本号 -->
+			<dependency>
+	            <groupId>org.springframework.boot</groupId>
+	            <artifactId>spring-boot-dependencies</artifactId>
+	            <version>${spring.boot.2.ver}</version>
+	            <type>pom</type>
+	            <scope>import</scope>
+	        </dependency> 
+	        
+        <!-- Apache Dubbo  -->
+        <!-- <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-dependencies-bom</artifactId>
+            <version>${dubbo.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency> -->
+	        
+	        <!-- 方式二、通过分别单独定义导入子项目中需要的<dependency>starter</dependency>，来达到统一管理项目版本号 -->
+           	<!-- 
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter</artifactId>
+                <version>${spring.boot.2.ver}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring.boot.2.ver}</version>
+            </dependency>
+			<dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-jdbc</artifactId>
+                <version>${spring.boot.2.ver}</version>
+            </dependency>
+ 			-->
+ 		</dependencies>
+	</dependencyManagement>
+	
+	
+	<build>
+		<plugins>
+			<!-- 配置maven-compiler-plugin,避免maven使用默认jdk版本编译 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<!-- 当前环境的maven版本号 -->
+				<version>3.3</version>
+				<configuration>
+					<source>1.8</source><!--源代码使用的开发版本 -->
+					<target>1.8</target><!--需要生成的目标class文件的编译版本 -->
+					<!-- 一般而言，target与source是保持一致的， 但是，有时候为了让程序能在其他版本的jdk中运行(对于低版本目标jdk，源代码中需要没有使用低版本jdk中不支持的语法)， 
+						会存在target不同于source的情况 -->
+				</configuration>
+			</plugin>
+			<!-- 配置资源处理插件 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!-- 设置忽略web.xml文件 -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.4</version>
+					<configuration>
+						<failOnMissingWebXml>false</failOnMissingWebXml>
+					</configuration>
+				</plugin>
+				<!-- springboot打jar包插件 -->
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<executions>
+						<execution>
+							<goals>
+								<goal>repackage</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
